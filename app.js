@@ -1,5 +1,5 @@
-const express = require('express');
-const morgan = require('morgan');
+const express = require('express'); // web framework for node.js
+const morgan = require('morgan'); // logs
 
 const app = express();
 
@@ -8,8 +8,10 @@ const orderRoutes = require('./api/routes/orders');
 
 app.use(morgan('dev'));
 
-app.use('/products', productRoutes);
-app.use('/orders', orderRoutes);
+app.use('/products', productRoutes); // http://localhost:3000/products
+app.use('/orders', orderRoutes); // http://localhost:3000/orders
+
+// handle errors, for exsample, there are no route for http://localhost:3000 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
     error.status = 404;

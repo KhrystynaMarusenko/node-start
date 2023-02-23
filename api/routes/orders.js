@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+//RESTful api
+
 router.get('/', (req, res, next) => {
     res.status(200).json({
         message: 'hedling get for /orders'
