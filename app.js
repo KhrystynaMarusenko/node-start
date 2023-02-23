@@ -1,11 +1,21 @@
 const express = require("express"); // web framework for node.js
 const morgan = require("morgan"); // logs
 const bodyParser = require("body-parser"); // for parsing data
+const mongoose = require("mongoose"); // library for conecting mongoDB and JS or NodeJs environment
 
 const app = express();
 
 const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
+
+// setup and connect to DB
+mongoose.set('strictQuery', true);
+mongoose.connect(
+  "mongodb+srv://marusenkokhrystyna:" +
+    process.env.MONGO_ATLAS_PW +
+    "@cluster0.xykrukm.mongodb.net/?retryWrites=true&w=majority",
+  () => console.log("Connected to MongoDB")
+);
 
 //middlewares
 app.use(morgan("dev"));
