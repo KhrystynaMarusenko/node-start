@@ -9,7 +9,7 @@ const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
 
 // setup and connect to DB
-mongoose.set('strictQuery', true);
+mongoose.set("strictQuery", true);
 mongoose.connect(
   "mongodb+srv://marusenkokhrystyna:" +
     process.env.MONGO_ATLAS_PW +
@@ -19,6 +19,8 @@ mongoose.connect(
 
 //middlewares
 app.use(morgan("dev"));
+// the access to images with url
+app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

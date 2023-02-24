@@ -1,5 +1,36 @@
 const express = require("express");
 const mongoose = require("mongoose");
+// upload images and storage them
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  // where to storage
+  destination: function (req, file, cb) {
+    cb(null, "./uploads");
+  },
+  // the name of file(must be a STRING)
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  },
+});
+
+// dif filters about a file, in this case it must be ipeg or png
+const fileFilter = (req, file, cb) => {
+  // reject a fole
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter: fileFilter,
+});
 const router = express.Router();
 
 const Product = require("../models/product");
@@ -18,6 +49,7 @@ router.get("/", (req, res, next) => {
             _id: doc._id,
             name: doc.name,
             price: doc.price,
+            productImage: doc.productImage,
             request: {
               type: "GET",
               url: `http://localhost:3000/products/${doc._id}`,
@@ -26,9 +58,6 @@ router.get("/", (req, res, next) => {
         }),
       };
       res.status(200).json(response);
-      //   docs.length >= 0
-      //     ? res.status(200).json(docs)
-      //     : res.status(404).json({ message: "No Entries found" });
     })
     .catch((err) => {
       console.log(err);
@@ -36,12 +65,14 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", upload.single("productImage"), (req, res, next) => {
+  // console.log(req.file);
   // creating a new Product with model(schema)
   const product = new Product({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     price: req.body.price,
+    productImage: req.file.path,
   });
 
   // save to the DB, if ok -> view the result, on another way -> error
@@ -54,6 +85,7 @@ router.post("/", (req, res, next) => {
         createdProduct: {
           name: result.name,
           price: result.price,
+          productImage: result.productImage,
           _id: result._id,
           request: {
             type: "GET",
