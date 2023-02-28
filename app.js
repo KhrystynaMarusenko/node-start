@@ -7,6 +7,7 @@ const app = express();
 
 const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
+const userRouts = require("./api/routes/user");
 
 // setup and connect to DB
 mongoose.set("strictQuery", true);
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 
 app.use("/products", productRoutes); // http://localhost:3000/products
 app.use("/orders", orderRoutes); // http://localhost:3000/orders
+app.use("/users", userRouts); // http://localhost:3000/users
 
 // handle errors, for exsample, there are no route for http://localhost:3000
 app.use((req, res, next) => {
